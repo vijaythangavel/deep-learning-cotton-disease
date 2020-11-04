@@ -38,7 +38,7 @@ MODEL_PATH = './model_inception.h5'
 
 #tf.compat.v1.disable_eager_execution()
 global graph
-graph = tf.get_default_graph()
+graph = tf.compat.v1.get_default_graph()
 
 def model_predict(img_path):
     global graph
@@ -50,10 +50,12 @@ def model_predict(img_path):
     print(x)
     tf.keras.backend.clear_session()
     model = tf.keras.models.load_model(MODEL_PATH)
-    model._make_predict_function() 
+    model.compile()
+    model.run_eagerly = True
+#    model._make_predict_function() 
     try:
-        with graph.as_default():
-            preds = model.predict(x)
+#        with graph.as_default():
+        preds = model.predict(x)
         preds = np.argmax(preds, axis=1)
         
     except ValueError as ve:
@@ -61,13 +63,15 @@ def model_predict(img_path):
     
 #    print(preds)
     if preds==0:
-        msg = "diseased cotton leaf"
+        msg = "DISEASED cotton LEAF"
     elif preds==1:
-        msg="diseased cotton plan"
+        msg="DISEASED cotton PLANT"
     elif preds==2:
-        msg="fresh cotton leaf"
+        msg="FRESH cotton LEAF"
+    elif preds==3:
+        msg="FRESH cotton PLANT"
     else:
-        msg=preds
+        msg=str(preds)
          
     return msg
 
