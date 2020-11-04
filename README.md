@@ -1,1 +1,1 @@
-# deep-learning-cotton-disiease
+# deep-learning-cotton-disease
